@@ -7,8 +7,14 @@ int main(int argc, char **argv) {
 }
 
 void init(void) {
-    for(int i=0; i<100; i++) {
-        ifixt[i] = 0;
+    locations = (Location *)malloc(sizeof(Location) * NUM_LOCATIONS);
+    for(int i=0; i<NUM_LOCATIONS; i++) {
+        locations[i].long_description = (char *)malloc(sizeof(char) * 500);
+        locations[i].short_description = (char *)malloc(sizeof(char) * 100);
+    }
+    words = (Word *)malloc(sizeof(Word) * NUM_WORDS);
+        for(int i=0; i<NUM_WORDS; i++) {
+        words[i].text = (char *)malloc(sizeof(char) * 5);
     }
     
 // C READ THE PARAMETERS
@@ -45,67 +51,7 @@ void init(void) {
 // 	DATA(IFIXT(I),I=1,20)/0,0,1,0,0,1,0,1,1,0,1,1,0,0,0,0,0,0,0,0/
 // 	DATA(DTRAV(I),I=1,15)/36,28,19,30,62,60,41,27,17,15,19,28,36
 // 	1 ,300,300/
-    jspkt[0] = 24;
-    jspkt[1] = 29;
-    jspkt[2] = 0;
-    jspkt[3] = 31;
-    jspkt[4] = 0;
-    jspkt[5] = 31;
-    jspkt[6] = 38;
-    jspkt[7] = 38;
-    jspkt[8] = 42;
-    jspkt[9] = 42;
-    jspkt[10] = 43;
-    jspkt[11] = 46;
-    jspkt[12] = 77;
-    jspkt[13] = 71;
-    jspkt[14] = 73;
-    jspkt[15] = 75;
-
-    iplt[0] = 3;
-    iplt[1] = 3;
-    iplt[2] = 8;
-    iplt[3] = 10;
-    iplt[4] = 11;
-    iplt[5] = 14;
-    iplt[6] = 13;
-    iplt[7] = 9;
-    iplt[8] = 15;
-    iplt[9] = 18;
-    iplt[10] = 19;
-    iplt[11] = 17;
-    iplt[12] = 27;
-    iplt[13] = 28;
-    iplt[14] = 29;
-    iplt[15] = 30;
-    iplt[15] = 0;
-    iplt[15] = 0;
-    iplt[15] = 3;
-    iplt[15] = 3;
-
-    ifixt[2] = 1;
-    ifixt[5] = 1;
-    ifixt[7] = 1;
-    ifixt[8] = 1;
-    ifixt[10] = 1;
-    ifixt[11] = 1;
-
-    dtrav[0] = 36;
-    dtrav[1] = 28;
-    dtrav[2] = 19;
-    dtrav[3] = 30;
-    dtrav[4] = 62;
-    dtrav[5] = 60;
-    dtrav[6] = 41;
-    dtrav[7] = 27;
-    dtrav[8] = 17;
-    dtrav[9] = 15;
-    dtrav[10] = 19;
-    dtrav[11] = 28;
-    dtrav[12] = 36;
-    dtrav[13] = 300;
-    dtrav[14] = 300;
-    
+   
 // 	DO 1001 I=1,300
 // 	STEXT(I)=0
 // 	IF(I.LE.200) BTEXT(I)=0
@@ -122,7 +68,7 @@ void init(void) {
     i = 0;
 
     readData();
-    f1100(0);
+    // f1100(0);
 
 }
 
@@ -130,40 +76,171 @@ void readData(void) {
     int ikind = 0;
     FILE *fp;
     fp = fopen("data.txt", "r");
+    char *sc = (char*)malloc(sizeof(char) * 3);
+
+    int section = 0;
+    while(section >= 0 && ikind++ < 10) {
+        fgets(sc, 3, fp);
+        section = atoi(sc);
+        printf("Section: %d\n", section);
+        switch(section) {
+            case 1:
+                loadLongLocationDescriptions(fp);
+                break;
+            case 2:
+                loadShortLocationDescriptions(fp);
+                break;
+            case 3:
+                loadTravelData(fp);
+                break;
+            case 4:
+            case 5:
+            case 6:
+                loadWords(fp);
+                break;
+            case 0:
+                section = -1;
+                break;
+        }
+        
+    }
 
     // 1002	READ(1,1003) IKIND
     // Read next char value
     // fgets(&ikind, 2, fp);
-    fscanf(fp, "%d", &ikind);
-    printf("Read: %d\n", ikind);
+    // fscanf(fp, "%d", &ikind);
+    // printf("Read: %d\n", ikind);
 
-    // 1003	FORMAT(G)
-    // format it to numeric
+    // // 1003	FORMAT(G)
+    // // format it to numeric
 
-    // 	GOTO(1100,1004,1004,1013,1020,1004,1004)(IKIND+1)
-    // Depending on the section number, call these subroutines
-    switch(ikind) {
-        case 0:
-            fclose(fp);
-            return;
-        case 1:
-        case 2:
-        case 5:
-        case 6:
-            f1004(fp);
-            break;
-        case 3:
-            f1013();
-            break;
-        case 4:
-            f1020();
-            break;
+    // // 	GOTO(1100,1004,1004,1013,1020,1004,1004)(IKIND+1)
+    // // Depending on the section number, call these subroutines
+    // switch(ikind) {
+    //     case 0:
+    //         fclose(fp);
+    //         return;
+    //     case 1:
+    //     case 2:
+    //     case 5:
+    //     case 6:
+    //         f1004(fp);
+    //         break;
+    //     case 3:
+    //         f1013();
+    //         break;
+    //     case 4:
+    //         f1020();
+    //         break;
 
-}
+    // }
 
 // C TRAVEL = NEG IF LAST THIS SOURCE + DEST*1024 + KEYWORD
 
 // C COND  = 1 IF LIGHT,  2 IF DON T ASK QUESTION
+}
+
+void loadLongLocationDescriptions(FILE *fp) {
+    char *line = (char*)malloc(sizeof(char) * 100);
+    int lineNumber = 0;
+
+    do {
+        fgets(line, 100, fp);
+        lineNumber = trimEntryNumber(line);
+        if(lineNumber == -1) {
+            break;
+        }
+
+        trimLeading(line);
+
+        if(strlen(locations[lineNumber].long_description) == 0) {
+            strcpy(locations[lineNumber].long_description, line);
+        } else {
+            strcat(locations[lineNumber].long_description, line);
+        }
+        
+    } while (lineNumber != -1);
+
+    for(int i=0; i<NUM_LOCATIONS; i++) {
+        printf("Location [%d]: '%s'\n", i, locations[i].long_description);
+    }
+
+    free(line);
+}
+
+void loadShortLocationDescriptions(FILE *fp) {
+    char *line = (char*)malloc(sizeof(char) * 100);
+    int lineNumber = 0;
+
+    do {
+        fgets(line, 100, fp);
+        lineNumber = trimEntryNumber(line);
+        if(lineNumber == -1) {
+            break;
+        }
+
+        trimLeading(line);
+
+        if(strlen(locations[lineNumber].short_description) == 0) {
+            strcpy(locations[lineNumber].short_description, line);
+        } else {
+            strcat(locations[lineNumber].short_description, line);
+        }
+        
+    } while (lineNumber != -1);
+
+    for(int i=0; i<NUM_LOCATIONS; i++) {
+        printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
+    }
+
+    free(line);
+}
+
+void loadTravelData(FILE *fp) {
+    char *line = (char*)malloc(sizeof(char) * 100);
+    int lineNumber = 0;
+
+    do {
+        fgets(line, 100, fp);
+        lineNumber = trimEntryNumber(line);
+        if(lineNumber == -1) {
+            break;
+        }
+
+        trimLeading(line);
+        // TODO
+        
+    } while (lineNumber != -1);
+
+    // for(int i=0; i<NUM_LOCATIONS; i++) {
+    //     printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
+    // }
+
+    free(line);
+
+}
+
+void loadWords(FILE *fp) {
+    char *line = (char*)malloc(sizeof(char) * 100);
+    int lineNumber = 0;
+
+    do {
+        fgets(line, 100, fp);
+        lineNumber = trimEntryNumber(line);
+        if(lineNumber == -1) {
+            break;
+        }
+
+        trimLeading(line);
+        // TODO
+        
+    } while (lineNumber != -1);
+
+    // for(int i=0; i<NUM_LOCATIONS; i++) {
+    //     printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
+    // }
+
+    free(line);
 }
 
 void f1004(FILE *fp) {

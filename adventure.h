@@ -1,5 +1,16 @@
 #include <stdio.h>
 
+#define NUM_LOCATIONS 80
+#define NUM_WORDS 500
+
+typedef struct _location {
+    char *long_description;
+    char *short_description;
+} Location;
+typedef struct _word {
+    char *text;
+} Word;
+
 // C ADVENTURES
 	// IMPLICIT INTEGER(A-Z)
 	// REAL RAN
@@ -24,6 +35,8 @@
 
 
 float RAN;
+Location *locations;
+Word *words;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
 int key[300], Default[300], travel[1000], tk[25], ktab[1000], atab[1000];
@@ -36,6 +49,11 @@ int i;
 
 void init(void);
 void readData(void);
+void loadLongLocationDescriptions(FILE *fp);
+void loadShortLocationDescriptions(FILE *fp);
+void loadTravelData(FILE *fp);
+void loadWords(FILE *fp);
+
 void f1004(FILE *fp);
 void f1013(void);
 void f1020(void);
