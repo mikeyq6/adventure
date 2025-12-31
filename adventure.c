@@ -120,10 +120,57 @@ void init(void) {
     }
     i = 0;
 
+    readData();
+    f1100(0);
 
-// 1002	READ(1,1003) IKIND
-// 1003	FORMAT(G)
-// 	GOTO(1100,1004,1004,1013,1020,1004,1004)(IKIND+1)
+}
+
+void readData(void) {
+    char ikind = 'a';
+    FILE *fp;
+    fp = fopen("data.txt", "r");
+
+    // 1002	READ(1,1003) IKIND
+    // Read next char value
+    // fgets(&ikind, 2, fp);
+    fscanf(fp, "%c", &ikind);
+    printf("Read: %c\n", ikind);
+
+    // 1003	FORMAT(G)
+    // format it to numeric
+
+    // 	GOTO(1100,1004,1004,1013,1020,1004,1004)(IKIND+1)
+    // Depending on the section number, call these subroutines
+    switch(ikind) {
+        case 0:
+            fclose(fp);
+            return;
+        case 1:
+        case 2:
+        case 5:
+        case 6:
+            f1004(fp);
+            break;
+        case 3:
+            f1013();
+            break;
+        case 4:
+            f1020();
+            break;
+
+}
+
+// C TRAVEL = NEG IF LAST THIS SOURCE + DEST*1024 + KEYWORD
+
+// C COND  = 1 IF LIGHT,  2 IF DON T ASK QUESTION
+}
+
+void f1004(FILE *fp) {
+    char jkind;
+    // char 
+
+    // fscanf(fp, "%d %s", &jkind, );
+
 // 1004	READ(1,1005)JKIND,(LLINE(I,J),J=3,22)
 // 1005	FORMAT(1G,20A5)
 // 	IF(JKIND.EQ.-1) GOTO 1002
@@ -132,4 +179,109 @@ void init(void) {
 // 	IF(LLINE(I,21-K).NE.' ') GOTO 1007
 // 1006	CONTINUE
 // 	STOP
+// 1007	LLINE(I,2)=20-KK+1
+// 	LLINE(I,1)=0
+// 	IF(IKIND.EQ.6)GOTO 1023
+// 	IF(IKIND.EQ.5)GOTO 1011
+// 	IF(IKIND.EQ.1) GOTO 1008
+// 	IF(STEXT(JKIND).NE.0) GOTO 1009
+// 	STEXT(JKIND)=I
+// 	GOTO 1010
+
+
+// 1008	IF(LTEXT(JKIND).NE.0) GOTO 1009
+// 	LTEXT(JKIND)=I
+// 	GOTO 1010
+// 1009	LLINE(I-1,1)=I
+// 1010	I=I+1
+// 	IF(I.NE.1000)GOTO 1004
+// 	PAUSE 'TOO MANY LINES'
+
+// 1011	IF(JKIND.LT.200)GOTO 1012
+// 	IF(BTEXT(JKIND-100).NE.0)GOTO 1009
+// 	BTEXT(JKIND-100)=I
+// 	BTEXT(JKIND-200)=I
+// 	GOTO 1010
+// 1012	IF(BTEXT(JKIND).NE.0)GOTO 1009
+// 	BTEXT(JKIND)=I
+// 	GOTO 1010
+
+// 1023	IF(RTEXT(JKIND).NE.0) GOTO 1009
+// 	RTEXT(JKIND)=I
+// 	GOTO 1010
 }
+
+void f1013(void) {
+    // 1013	I=1
+// 1014	READ(1,1015)JKIND,LKIND,(TK(L),L=1,10)
+// 1015	FORMAT(12G)
+// 	IF(JKIND.EQ.-1) GOTO 1002
+// 	IF(KEY(JKIND).NE.0) GOTO 1016
+// 	KEY(JKIND)=I
+// 	GOTO 1017
+// 1016	TRAVEL(I-1)=-TRAVEL(I-1)
+// 1017	DO 1018 L=1,10
+// 	IF(TK(L).EQ.0) GOTO 1019
+// 	TRAVEL(I)=LKIND*1024+TK(L)
+// 	I=I+1
+// 	IF(I.EQ.1000) STOP
+// 1018	CONTINUE
+// 1019	TRAVEL(I-1)=-TRAVEL(I-1)
+// 	GOTO 1014
+}
+
+void f1020(void) {
+
+// 1020	DO 1022 IU=1,1000
+// 	READ(1,1021) KTAB(IU),ATAB(IU)
+// 1021	FORMAT(G,A5)
+// 	IF(KTAB(IU).EQ.-1)GOTO 1002
+// 1022	CONTINUE
+// 	PAUSE 'TOO MANY WORDS'
+}
+
+void f1100(float val) {
+// 1100	DO 1101 I=1,100
+// 	IPLACE(I)=IPLT(I)
+// 	IFIXED(I)=IFIXT(I)
+// 1101	ICHAIN(I)=0
+
+// 	DO 1102 I=1,300
+// 	COND(I)=0
+// 	ABB(I)=0
+// 1102	IOBJ(I)=0
+// 	DO 1103 I=1,10
+// 1103	COND(I)=1
+// 	COND(16)=2
+// 	COND(20)=2
+// 	COND(21)=2
+// 	COND(22)=2
+// 	COND(23)=2
+// 	COND(24)=2
+// 	COND(25)=2
+// 	COND(26)=2
+// 	COND(31)=2
+// 	COND(32)=2
+// 	COND(79)=2
+
+// 	DO 1107 I=1,100
+// 	KTEM=IPLACE(I)
+// 	IF(KTEM.EQ.0)GOTO 1107
+// 	IF(IOBJ(KTEM).NE.0) GOTO 1104
+// 	IOBJ(KTEM)=I
+// 	GO TO 1107
+// 1104	KTEM=IOBJ(KTEM)
+// 1105	IF(ICHAIN(KTEM).NE.0) GOTO 1106
+// 	ICHAIN(KTEM)=I
+// 	GOTO 1107
+// 1106	KTEM=ICHAIN(KTEM)
+// 	GOTO 1105
+// 1107	CONTINUE
+// 	IDWARF=0
+// 	IFIRST=1
+// 	IWEST=0
+// 	ILONG=1
+// 	IDETAL=0
+// 	PAUSE 'INIT DONE'
+}
+

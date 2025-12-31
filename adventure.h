@@ -35,3 +35,8 @@ int i;
 
 
 void init(void);
+void readData(void);
+void f1004(FILE *fp);
+void f1013(void);
+void f1020(void);
+void f1100(float val);
