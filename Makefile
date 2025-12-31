@@ -1,5 +1,5 @@
 CC=gcc -std=c17 -pedantic
-OBJS=adventure.c
+OBJS=utils.c adventure.c
 LFLAGS=
 SUPPRESS=
 

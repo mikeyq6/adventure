@@ -1,4 +1,5 @@
 #include "adventure.h"
+#include "utils.h"
 
 int main(int argc, char **argv) {
     init();
@@ -126,15 +127,15 @@ void init(void) {
 }
 
 void readData(void) {
-    char ikind = 'a';
+    int ikind = 0;
     FILE *fp;
     fp = fopen("data.txt", "r");
 
     // 1002	READ(1,1003) IKIND
     // Read next char value
     // fgets(&ikind, 2, fp);
-    fscanf(fp, "%c", &ikind);
-    printf("Read: %c\n", ikind);
+    fscanf(fp, "%d", &ikind);
+    printf("Read: %d\n", ikind);
 
     // 1003	FORMAT(G)
     // format it to numeric
@@ -166,10 +167,13 @@ void readData(void) {
 }
 
 void f1004(FILE *fp) {
-    char jkind;
-    // char 
+    short jkind;
+    char sentence[100];
 
-    // fscanf(fp, "%d %s", &jkind, );
+    fscanf(fp, "%hd", &jkind);
+    fgets(sentence, sizeof sentence, fp);
+    trimLeading(sentence);
+    printf("Read: '%hd', '%s'\n", jkind, sentence);
 
 // 1004	READ(1,1005)JKIND,(LLINE(I,J),J=3,22)
 // 1005	FORMAT(1G,20A5)
