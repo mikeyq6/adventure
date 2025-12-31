@@ -17,7 +17,10 @@ void init(void) {
         words[i].text = (char *)malloc(sizeof(char) * 5);
     }
     travelRules = (TravelRule *)malloc(sizeof(TravelRule) * NUM_TRAVEL_RULES);
-
+    randoms = (Random*)malloc(sizeof(Random*) * NUM_RANDOMS);
+    for(int i=0; i<NUM_RANDOMS; i++) {
+        randoms[i].description = (char*)malloc(sizeof(char) * 500);
+    }
     
     
 // C READ THE PARAMETERS
@@ -111,36 +114,6 @@ void readData(void) {
         }
         
     }
-
-    // 1002	READ(1,1003) IKIND
-    // Read next char value
-    // fgets(&ikind, 2, fp);
-    // fscanf(fp, "%d", &ikind);
-    // printf("Read: %d\n", ikind);
-
-    // // 1003	FORMAT(G)
-    // // format it to numeric
-
-    // // 	GOTO(1100,1004,1004,1013,1020,1004,1004)(IKIND+1)
-    // // Depending on the section number, call these subroutines
-    // switch(ikind) {
-    //     case 0:
-    //         fclose(fp);
-    //         return;
-    //     case 1:
-    //     case 2:
-    //     case 5:
-    //     case 6:
-    //         f1004(fp);
-    //         break;
-    //     case 3:
-    //         f1013();
-    //         break;
-    //     case 4:
-    //         f1020();
-    //         break;
-
-    // }
 
 // C TRAVEL = NEG IF LAST THIS SOURCE + DEST*1024 + KEYWORD
 
@@ -269,17 +242,21 @@ void loadSpecials(FILE *fp) {
             break;
         }
 
-        trimLeading(line, 0);
-        // TODO
+        trimLeading(line, 1);
+
+        if(strlen(randoms[lineNumber].description) == 0) {
+            strcpy(randoms[lineNumber].description, line);
+        } else {
+            strcat(randoms[lineNumber].description, line);
+        }
         
     } while (lineNumber != -1);
 
-    // for(int i=0; i<NUM_LOCATIONS; i++) {
-    //     printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
-    // }
+    for(int i=0; i<NUM_LOCATIONS; i++) {
+        printf("Random [%d]: '%s'\n", i, randoms[i].description);
+    }
 
     free(line);
-
 }
 
 void f1004(FILE *fp) {
