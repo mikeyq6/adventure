@@ -13,9 +13,12 @@ void init(void) {
         locations[i].short_description = (char *)malloc(sizeof(char) * 100);
     }
     words = (Word *)malloc(sizeof(Word) * NUM_WORDS);
-        for(int i=0; i<NUM_WORDS; i++) {
+    for(int i=0; i<NUM_WORDS; i++) {
         words[i].text = (char *)malloc(sizeof(char) * 5);
     }
+    travelRules = (TravelRule *)malloc(sizeof(TravelRule) * NUM_TRAVEL_RULES);
+
+    
     
 // C READ THE PARAMETERS
 
@@ -97,8 +100,10 @@ void readData(void) {
                 loadWords(fp);
                 break;
             case 5:
+                loadSpecials(fp);
+                break;
             case 6:
-                loadTravelData(fp);
+                loadSpecials(fp);
                 break;
             case 0:
                 section = -1;
@@ -199,27 +204,31 @@ void loadShortLocationDescriptions(FILE *fp) {
 }
 
 void loadTravelData(FILE *fp) {
-    char *line = (char*)malloc(sizeof(char) * 100);
-    int lineNumber = 0;
+    int ruleNumber = 0;
+    int temp = 0;
+    char *line = (char*)malloc(sizeof(char) * 50);
 
     do {
-        fgets(line, 100, fp);
-        lineNumber = trimEntryNumber(line);
-        if(lineNumber == -1) {
+        fgets(line, 50, fp);
+        sscanf(line, "%d %d %d %d %d %d %d %d %d %d\n",
+            &travelRules[ruleNumber].from, &travelRules[ruleNumber].to,
+            &travelRules[ruleNumber].verbs[0], &travelRules[ruleNumber].verbs[1],
+            &travelRules[ruleNumber].verbs[2], &travelRules[ruleNumber].verbs[3],
+            &travelRules[ruleNumber].verbs[4], &travelRules[ruleNumber].verbs[5],
+            &travelRules[ruleNumber].verbs[6], &travelRules[ruleNumber].verbs[7]);
+        
+        if(travelRules[ruleNumber].from == -1) {
             break;
         }
-
-        trimLeading(line, 0);
-        // TODO
+        // printf("ruleNumber: [%d], From: [%d]\n", ruleNumber, travelRules[ruleNumber].from);
         
-    } while (lineNumber != -1);
+        
+    } while (travelRules[ruleNumber++].from != -1 && temp++ < 300);
 
-    // for(int i=0; i<NUM_LOCATIONS; i++) {
-    //     printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
-    // }
-
-    free(line);
-
+    for(int i=0; i<NUM_TRAVEL_RULES; i++) {
+        printf("From [%d] To [%d] By: [%d] [%d] [%d] [%d]\n", travelRules[i].from, travelRules[i].to,
+            travelRules[i].verbs[0], travelRules[i].verbs[1], travelRules[i].verbs[2], travelRules[i].verbs[3]);
+    }
 }
 
 void loadWords(FILE *fp) {
@@ -242,11 +251,35 @@ void loadWords(FILE *fp) {
         
     } while (wordNumber != -1);
 
-    for(int i=0; i<NUM_WORDS; i++) {
-        printf("Word class [%d]: '%s'\n", words[i].class, words[i].text);
-    }
+    // for(int i=0; i<NUM_WORDS; i++) {
+    //     printf("Word class [%d]: '%s'\n", words[i].class, words[i].text);
+    // }
 
     free(line);
+}
+
+void loadSpecials(FILE *fp) {
+    char *line = (char*)malloc(sizeof(char) * 100);
+    int lineNumber = 0;
+
+    do {
+        fgets(line, 100, fp);
+        lineNumber = trimEntryNumber(line);
+        if(lineNumber == -1) {
+            break;
+        }
+
+        trimLeading(line, 0);
+        // TODO
+        
+    } while (lineNumber != -1);
+
+    // for(int i=0; i<NUM_LOCATIONS; i++) {
+    //     printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
+    // }
+
+    free(line);
+
 }
 
 void f1004(FILE *fp) {

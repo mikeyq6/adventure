@@ -2,6 +2,7 @@
 
 #define NUM_LOCATIONS 80
 #define NUM_WORDS 500
+#define NUM_TRAVEL_RULES 200
 
 typedef struct _location {
     char *long_description;
@@ -19,6 +20,12 @@ typedef struct _word {
     WordClass class;
     char *text;
 } Word;
+
+typedef struct _travelRule {
+    int from;
+    int to;
+    int verbs[10];
+} TravelRule;
 
 
 // C ADVENTURES
@@ -47,6 +54,7 @@ typedef struct _word {
 float RAN;
 Location *locations;
 Word *words;
+TravelRule *travelRules;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
 int key[300], Default[300], travel[1000], tk[25], ktab[1000], atab[1000];
@@ -63,6 +71,7 @@ void loadLongLocationDescriptions(FILE *fp);
 void loadShortLocationDescriptions(FILE *fp);
 void loadTravelData(FILE *fp);
 void loadWords(FILE *fp);
+void loadSpecials(FILE *fp);
 
 void f1004(FILE *fp);
 void f1013(void);
