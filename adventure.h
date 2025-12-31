@@ -7,9 +7,19 @@ typedef struct _location {
     char *long_description;
     char *short_description;
 } Location;
+
+typedef enum {
+    WORD_DIR = 0,
+    WORD_NOUN = 1,
+    WORD_VERB = 2,
+    WORD_SPECIAL = 3
+} WordClass;
+
 typedef struct _word {
+    WordClass class;
     char *text;
 } Word;
+
 
 // C ADVENTURES
 	// IMPLICIT INTEGER(A-Z)

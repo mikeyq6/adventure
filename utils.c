@@ -1,6 +1,6 @@
 #include "utils.h"
 #include <stdio.h>
-void trimLeading(char *string) {
+void trimLeading(char *string, int replaceLB) {
     char *temp = (char*)malloc(strlen(string) * sizeof(char));
     int cur = 0;
     char firstCharFound = 0;
@@ -10,7 +10,9 @@ void trimLeading(char *string) {
             temp[cur++] = '\0';
             break;
         } else if(string[i] == '\r' || string[i] == '\n') {
-            temp[cur++] = ' ';
+            if(replaceLB) {
+                temp[cur++] = ' ';
+            }
         } else if((string[i] == ' ' || string[i] == '\t') && firstCharFound == 0) {
             continue;
         } else {

@@ -94,9 +94,11 @@ void readData(void) {
                 loadTravelData(fp);
                 break;
             case 4:
+                loadWords(fp);
+                break;
             case 5:
             case 6:
-                loadWords(fp);
+                loadTravelData(fp);
                 break;
             case 0:
                 section = -1;
@@ -151,7 +153,7 @@ void loadLongLocationDescriptions(FILE *fp) {
             break;
         }
 
-        trimLeading(line);
+        trimLeading(line, 1);
 
         if(strlen(locations[lineNumber].long_description) == 0) {
             strcpy(locations[lineNumber].long_description, line);
@@ -179,7 +181,7 @@ void loadShortLocationDescriptions(FILE *fp) {
             break;
         }
 
-        trimLeading(line);
+        trimLeading(line, 0);
 
         if(strlen(locations[lineNumber].short_description) == 0) {
             strcpy(locations[lineNumber].short_description, line);
@@ -207,7 +209,7 @@ void loadTravelData(FILE *fp) {
             break;
         }
 
-        trimLeading(line);
+        trimLeading(line, 0);
         // TODO
         
     } while (lineNumber != -1);
@@ -222,23 +224,27 @@ void loadTravelData(FILE *fp) {
 
 void loadWords(FILE *fp) {
     char *line = (char*)malloc(sizeof(char) * 100);
-    int lineNumber = 0;
+    int wordNumber = 0;
+    int wordCount = 0;
 
     do {
         fgets(line, 100, fp);
-        lineNumber = trimEntryNumber(line);
-        if(lineNumber == -1) {
+        wordNumber = trimEntryNumber(line);
+        if(wordNumber == -1) {
             break;
         }
 
-        trimLeading(line);
-        // TODO
-        
-    } while (lineNumber != -1);
+        trimLeading(line, 0);
 
-    // for(int i=0; i<NUM_LOCATIONS; i++) {
-    //     printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
-    // }
+        words[wordCount].class = wordNumber / 1000;
+        strcpy(words[wordCount].text, line);
+        wordCount++;
+        
+    } while (wordNumber != -1);
+
+    for(int i=0; i<NUM_WORDS; i++) {
+        printf("Word class [%d]: '%s'\n", words[i].class, words[i].text);
+    }
 
     free(line);
 }
@@ -249,7 +255,7 @@ void f1004(FILE *fp) {
 
     fscanf(fp, "%hd", &jkind);
     fgets(sentence, sizeof sentence, fp);
-    trimLeading(sentence);
+    trimLeading(sentence, 1);
     printf("Read: '%hd', '%s'\n", jkind, sentence);
 
 // 1004	READ(1,1005)JKIND,(LLINE(I,J),J=3,22)
