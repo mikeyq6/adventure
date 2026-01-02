@@ -76,10 +76,12 @@ int btext[200], dseen[10], dloc[10], odloc[10], dtrav[20], rtext[100];
 int jspkt[100], iplt[100], ifixt[100];
 
 int setup, keys, lamp, grate, rod, bird, nugget, snake, food, water, axe;
-int i;
+int running = 1;
 
 
 void init(void);
+void run(void);
+void printMessage(int num);
 void readData(void);
 void loadLongLocationDescriptions(FILE *fp);
 void loadShortLocationDescriptions(FILE *fp);
@@ -87,8 +89,3 @@ void loadTravelData(FILE *fp);
 void loadWords(FILE *fp);
 void loadObjectDescriptions(FILE *fp);
 void loadSpecials(FILE *fp);
-
-void f1004(FILE *fp);
-void f1013(void);
-void f1020(void);
-void f1100(float val);

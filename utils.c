@@ -43,7 +43,7 @@ int trimEntryNumber(char *string) {
     }
     num = atoi(strNum);
 
-    printf("strNum='%s', num=%d\n", strNum, num);
+    // printf("strNum='%s', num=%d\n", strNum, num);
 
     strcpy(string, temp);
     free(temp);
