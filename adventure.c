@@ -8,6 +8,7 @@ int main(int argc, char **argv) {
 }
 
 void init(void) {
+    currentLocation = 1;
     locations = (Location *)malloc(sizeof(Location) * NUM_LOCATIONS);
     for(int i=0; i<NUM_LOCATIONS; i++) {
         locations[i].long_description = (char *)malloc(sizeof(char) * 500);
@@ -198,6 +199,7 @@ void loadWords(FILE *fp) {
         trimLeading(line, 0);
 
         words[wordCount].class = wordNumber / 1000;
+        words[wordCount].number = wordNumber % 1000;
         strcpy(words[wordCount].text, line);
         wordCount++;
         
@@ -279,8 +281,16 @@ void run(void) {
     char *cmd2 = (char*)malloc(sizeof(char) * 100);
     yes(65, 1, 0, &yeah); // Show initial message
 
+    printMessage(1); // Show intro
+
     while(running) {
+        printLocation(currentLocation);
         readCommand(cmd1, cmd2);
+        if(strcmp(cmd1, "QUIT") == 0 || strcmp(cmd1, "Q") == 0) {
+            running = 0;
+            continue;
+        }
+        handleCommand(cmd1, cmd2);
         // printf("Full command: [%s] [%s]\n", cmd1, cmd2);
     }
 
@@ -291,6 +301,7 @@ void run(void) {
 void readSingleCommand(char *cmd) {
     fgets(cmd, 100, stdin);
     stripLinebreak(cmd);
+    toUppercase(cmd);
 }
 void readCommand(char *cmd1, char* cmd2) {
     char *cmd = (char*)malloc(sizeof(char) * 100);
@@ -302,7 +313,42 @@ void readCommand(char *cmd1, char* cmd2) {
         strcpy(cmd1, cmd);
         cmd2[0] = '\0';
     }
+
     free(cmd);
+}
+
+void handleCommand(char *cmd1, char* cmd2) {
+    Word *word1 = getWord(cmd1);
+    Word *word2 = strlen(cmd2) > 0 ? getWord(cmd2) : NULL;
+
+    if(word1 == NULL) {
+        printMessage(60);
+        return;
+    }
+
+    if(word1->class == WORD_DIR) {
+        // printf("Direction word");
+        if(strcmp(word1->text, "WEST") == 0) { // Special case
+            printMessage(17);
+        }
+        handleTravel(word1);
+    }
+}
+
+void handleTravel(Word *word) {
+    for(int i=0; i<NUM_TRAVEL_RULES; i++) {
+        if(travelRules[i].from == currentLocation) {
+            for(int j=0; j<10; j++) {
+                if(travelRules[i].verbs[j] == word->number) {
+                    currentLocation = travelRules[i].to;
+                    return;
+                } else if(travelRules[i].verbs[j] == 0) {
+                    break;
+                }
+            }
+        }
+    }
+
 }
 
 void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) {
@@ -325,6 +371,25 @@ void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) 
     free(cmd);
 }
 
+Word *getWord(const char *cmd) {
+    for(int i=0; i<NUM_WORDS; i++) {
+        if(strcmp(cmd, (*(words + i)).text) == 0) {
+            return words + i;
+        }
+    }
+    return NULL;
+}
+
+// Utils
+
 void printMessage(int num) {
     printf("\n%s\n", randoms[num-1].description);
+}
+void printLocation(int num) {
+    if(locations[num].visited) {
+        printf("\n%s\n", locations[num].short_description);
+    } else {
+        locations[num].visited = 1;
+        printf("\n%s\n", locations[num].long_description);
+    }
 }

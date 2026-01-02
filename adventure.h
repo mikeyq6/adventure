@@ -12,6 +12,7 @@
 typedef struct _location {
     char *long_description;
     char *short_description;
+    int visited;
 } Location;
 
 typedef enum {
@@ -23,6 +24,7 @@ typedef enum {
 
 typedef struct _word {
     WordClass class;
+    int number;
     char *text;
 } Word;
 
@@ -79,6 +81,7 @@ int jspkt[100], iplt[100], ifixt[100];
 
 int setup, keys, lamp, grate, rod, bird, nugget, snake, food, water, axe;
 int running = 1;
+int currentLocation;
 
 // initialisation
 void init(void);
@@ -94,7 +97,11 @@ void loadSpecials(FILE *fp);
 void run(void);
 void readSingleCommand(char *cmd);
 void readCommand(char *cmd1, char* cmd2);
+void handleCommand(char *cmd1, char* cmd2);
+void handleTravel(Word *word);
+Word *getWord(const char *cmd);
 void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
 
 // Utils
 void printMessage(int num);
+void printLocation(int num);
