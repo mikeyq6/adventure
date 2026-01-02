@@ -44,6 +44,20 @@ typedef struct _objectText {
     char* text;
 } ObjectText;
 
+typedef enum {
+    TYPE_OK = 0,
+    TYPE_BLOCKED = 1,
+    TYPE_AMBIGUOUS = 2,
+    TYPE_INVALID = 3,
+    TYPE_SPECIAL = 4
+} MoveType;
+
+typedef struct _moveResult {
+    MoveType type;
+    int dest;
+    int messageNumber;
+} MoveResult;
+
 // C ADVENTURES
 	// IMPLICIT INTEGER(A-Z)
 	// REAL RAN
@@ -73,6 +87,7 @@ Word *words;
 TravelRule *travelRules;
 Random *randoms;
 ObjectText *objectDescriptions;
+MoveResult *currentMove;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
 int key[300], Default[300], travel[1000], tk[25], ktab[1000], atab[1000];
@@ -98,7 +113,8 @@ void run(void);
 void readSingleCommand(char *cmd);
 void readCommand(char *cmd1, char* cmd2);
 void handleCommand(char *cmd1, char* cmd2);
-void handleTravel(Word *word);
+void handleTravel(Word *word, MoveResult *currentMove);
+void handleSpecial(int code);
 Word *getWord(const char *cmd);
 void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
 

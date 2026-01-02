@@ -28,7 +28,8 @@ void init(void) {
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
         objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
     }
-    
+    currentMove = (MoveResult*)malloc(sizeof(MoveResult));
+
     setup = 1;
     keys = 1;
     lamp = 2;
@@ -350,16 +351,28 @@ void handleCommand(char *cmd1, char* cmd2) {
         if(strcmp(word1->text, "WEST") == 0) { // Special case
             printMessage(17);
         }
-        handleTravel(word1);
+        handleTravel(word1, currentMove);
+        switch(currentMove->type) {
+            case TYPE_OK:
+                currentLocation = currentMove->dest;
+                break;
+            case TYPE_SPECIAL:
+                handleSpecial(currentMove->dest);
+                break;
+            case TYPE_INVALID:
+                printMessage(currentMove->messageNumber);
+                break;
+        }
     }
 }
 
-void handleTravel(Word *word) {
+void handleTravel(Word *word, MoveResult *currentMove) {
     for(int i=0; i<NUM_TRAVEL_RULES; i++) {
         if(travelRules[i].from == currentLocation) {
             for(int j=0; j<10; j++) {
                 if(travelRules[i].verbs[j] == word->number) {
-                    currentLocation = travelRules[i].to;
+                    currentMove->dest = travelRules[i].to;
+                    currentMove->type = travelRules[i].to >= 300 ? TYPE_SPECIAL : TYPE_OK;
                     return;
                 } else if(travelRules[i].verbs[j] == 0) {
                     break;
@@ -367,7 +380,37 @@ void handleTravel(Word *word) {
             }
         }
     }
+    currentMove->type = TYPE_INVALID;
+    currentMove->messageNumber = 9;
+}
 
+void handleSpecial(int code) {
+    switch(code) {
+        case 300:
+            break;
+        case 301:
+            break;
+        case 302:
+            break;
+        case 303:
+            break;
+        case 304:
+            break;
+        case 305:
+            break;
+        case 306:
+            break;
+        case 307:
+            break;
+        case 308:
+            break;
+        case 309:
+            break;
+        case 310:
+            break;
+        case 311:
+            break;
+    }
 }
 
 void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) {
