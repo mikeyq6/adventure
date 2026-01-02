@@ -71,3 +71,11 @@ void stripLinebreak(char *string) {
     }
 }
 
+void toUppercase(char *string) {
+    for(int i=0; i<strlen(string); i++) {
+        if(string[i] >= 'a' && string[i] <= 'z') {
+            string[i] -= 32;
+        }
+    }
+}
+
