@@ -1,10 +1,13 @@
 #include <stdio.h>
 
+// #define DEBUG_DATA_PARSING 1
+
 #define NUM_LOCATIONS 80
 #define NUM_WORDS 500
 #define NUM_TRAVEL_RULES 200
 #define NUM_RANDOMS 80
 #define NUM_OBJECT_DESC 23
+
 
 typedef struct _location {
     char *long_description;
@@ -38,7 +41,6 @@ typedef struct _objectText {
     int state;
     char* text;
 } ObjectText;
-
 
 // C ADVENTURES
 	// IMPLICIT INTEGER(A-Z)
@@ -78,10 +80,8 @@ int jspkt[100], iplt[100], ifixt[100];
 int setup, keys, lamp, grate, rod, bird, nugget, snake, food, water, axe;
 int running = 1;
 
-
+// initialisation
 void init(void);
-void run(void);
-void printMessage(int num);
 void readData(void);
 void loadLongLocationDescriptions(FILE *fp);
 void loadShortLocationDescriptions(FILE *fp);
@@ -89,3 +89,11 @@ void loadTravelData(FILE *fp);
 void loadWords(FILE *fp);
 void loadObjectDescriptions(FILE *fp);
 void loadSpecials(FILE *fp);
+
+// Gameplay
+void run(void);
+void parseCommand(char *currentCommand);
+void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes, char* currentCommand);
+
+// Utils
+void printMessage(int num);

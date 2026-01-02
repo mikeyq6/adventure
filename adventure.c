@@ -7,14 +7,6 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-void run(void) {
-    printMessage(65);
-
-    while(running) {
-
-    }
-}
-
 void init(void) {
     locations = (Location *)malloc(sizeof(Location) * NUM_LOCATIONS);
     for(int i=0; i<NUM_LOCATIONS; i++) {
@@ -57,7 +49,6 @@ void init(void) {
     readData();
 }
 
-
 void readData(void) {
     int ikind = 0;
     FILE *fp;
@@ -68,7 +59,9 @@ void readData(void) {
     while(section >= 0 && ikind++ < 10) {
         fgets(sc, 3, fp);
         section = atoi(sc);
+        #ifdef DEBUG_DATA_PARSING
         printf("Section: %d\n", section);
+        #endif
         switch(section) {
             case 1:
                 loadLongLocationDescriptions(fp);
@@ -121,9 +114,11 @@ void loadLongLocationDescriptions(FILE *fp) {
         
     } while (lineNumber != -1);
 
+    #ifdef DEBUG_DATA_PARSING
     for(int i=0; i<NUM_LOCATIONS; i++) {
         printf("Location [%d]: '%s'\n", i, locations[i].long_description);
     }
+    #endif
 
     free(line);
 }
@@ -149,9 +144,11 @@ void loadShortLocationDescriptions(FILE *fp) {
         
     } while (lineNumber != -1);
 
+    #ifdef DEBUG_DATA_PARSING
     for(int i=0; i<NUM_LOCATIONS; i++) {
         printf("Short Location [%d]: '%s'\n", i, locations[i].short_description);
     }
+    #endif
 
     free(line);
 }
@@ -178,10 +175,12 @@ void loadTravelData(FILE *fp) {
         
     } while (travelRules[ruleNumber++].from != -1 && temp++ < 300);
 
+    #ifdef DEBUG_DATA_PARSING
     for(int i=0; i<NUM_TRAVEL_RULES; i++) {
         printf("From [%d] To [%d] By: [%d] [%d] [%d] [%d]\n", travelRules[i].from, travelRules[i].to,
             travelRules[i].verbs[0], travelRules[i].verbs[1], travelRules[i].verbs[2], travelRules[i].verbs[3]);
     }
+    #endif
 }
 
 void loadWords(FILE *fp) {
@@ -204,9 +203,11 @@ void loadWords(FILE *fp) {
         
     } while (wordNumber != -1);
 
-    // for(int i=0; i<NUM_WORDS; i++) {
-    //     printf("Word class [%d]: '%s'\n", words[i].class, words[i].text);
-    // }
+    #ifdef DEBUG_DATA_PARSING
+    for(int i=0; i<NUM_WORDS; i++) {
+        printf("Word class [%d]: '%s'\n", words[i].class, words[i].text);
+    }
+    #endif
 
     free(line);
 }
@@ -231,10 +232,12 @@ void loadObjectDescriptions(FILE *fp) {
         
     } while (objectNumber != -1);
 
+    #ifdef DEBUG_DATA_PARSING
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
         printf("Object [%d], State %d, Desc: '%s'\n", objectDescriptions[i].object,
                 objectDescriptions[i].state, objectDescriptions[i].text);
     }
+    #endif
 
     free(line);
 }
@@ -250,7 +253,7 @@ void loadSpecials(FILE *fp) {
             break;
         }
 
-        trimLeading(line, 0);
+        trimLeading(line, 1);
 
         if(strlen(randoms[lineNumber-1].description) == 0) {
             strcpy(randoms[lineNumber-1].description, line);
@@ -260,14 +263,50 @@ void loadSpecials(FILE *fp) {
         
     } while (lineNumber != -1);
 
+    #ifdef DEBUG_DATA_PARSING
     for(int i=0; i<NUM_LOCATIONS; i++) {
         printf("Random [%d]: '%s'\n", i, randoms[i].description);
     }
+    #endif
 
     free(line);
 }
 
+// Gameplay
+void run(void) {
+    int yeah = 0;
+    char *currentCommand = (char*)malloc(sizeof(char) * 100);
+    yes(65, 1, 0, &yeah, currentCommand);
+
+    while(running) {
+        parseCommand(currentCommand);
+        printf("Command: %s\n", currentCommand);
+    }
+
+    free(currentCommand);
+}
+
+void parseCommand(char *currentCommand) {
+    scanf("%s", currentCommand);
+}
+
+void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes, char *currentCommand) {
+    printMessage(messageToShow);
+    parseCommand(currentCommand);
+
+    if(strcmp(currentCommand, "NO") == 0 || strcmp(currentCommand, "N") == 0) {
+        *hasSaidYes = 0;
+        if(messageIfNo) {
+            printMessage(messageIfNo);
+        }
+    } else {
+        *hasSaidYes = 1;
+        if(messageIfYes) {
+            printMessage(messageIfYes);
+        }
+    }
+}
 
 void printMessage(int num) {
-    printf("%s\n", randoms[num-1].description);
+    printf("\n%s\n", randoms[num-1].description);
 }
