@@ -92,8 +92,9 @@ void loadSpecials(FILE *fp);
 
 // Gameplay
 void run(void);
-void parseCommand(char *currentCommand);
-void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes, char* currentCommand);
+void readSingleCommand(char *cmd);
+void readCommand(char *cmd1, char* cmd2);
+void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
 
 // Utils
 void printMessage(int num);

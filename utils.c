@@ -51,3 +51,23 @@ int trimEntryNumber(char *string) {
 
     return num;
 }
+
+int containsSpace(const char *string) {
+    int contains = 0;
+    int len = strlen(string);
+    for(int i=0; i<len; i++) {
+        if(*(string + i) == ' ') {
+            contains = 1;
+            break;
+        }
+    }
+    return contains;
+}
+
+void stripLinebreak(char *string) {
+    int len = strlen(string);
+    while(string[len-1] == '\n' || string[len-1] == '\r') {
+        string[--len] = '\0';
+    }
+}
+

@@ -275,26 +275,43 @@ void loadSpecials(FILE *fp) {
 // Gameplay
 void run(void) {
     int yeah = 0;
-    char *currentCommand = (char*)malloc(sizeof(char) * 100);
-    yes(65, 1, 0, &yeah, currentCommand);
+    char *cmd1 = (char*)malloc(sizeof(char) * 100);
+    char *cmd2 = (char*)malloc(sizeof(char) * 100);
+    yes(65, 1, 0, &yeah); // Show initial message
 
     while(running) {
-        parseCommand(currentCommand);
-        printf("Command: %s\n", currentCommand);
+        readCommand(cmd1, cmd2);
+        // printf("Full command: [%s] [%s]\n", cmd1, cmd2);
     }
 
-    free(currentCommand);
+    free(cmd1);
+    free(cmd2);
 }
 
-void parseCommand(char *currentCommand) {
-    scanf("%s", currentCommand);
+void readSingleCommand(char *cmd) {
+    fgets(cmd, 100, stdin);
+    stripLinebreak(cmd);
+}
+void readCommand(char *cmd1, char* cmd2) {
+    char *cmd = (char*)malloc(sizeof(char) * 100);
+    readSingleCommand(cmd);
+    // printf("Single: %s\n", cmd);
+    if(containsSpace(cmd)) {
+        sscanf(cmd, "%s %s", cmd1, cmd2);
+    } else {
+        strcpy(cmd1, cmd);
+        cmd2[0] = '\0';
+    }
+    free(cmd);
 }
 
-void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes, char *currentCommand) {
+void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) {
+    char *cmd = (char*)malloc(sizeof(char) * 100);
     printMessage(messageToShow);
-    parseCommand(currentCommand);
+    readSingleCommand(cmd);
+    // printf("Command: [%s]\n", cmd);
 
-    if(strcmp(currentCommand, "NO") == 0 || strcmp(currentCommand, "N") == 0) {
+    if(strcmp(cmd, "NO") == 0 || strcmp(cmd, "N") == 0) {
         *hasSaidYes = 0;
         if(messageIfNo) {
             printMessage(messageIfNo);
@@ -305,6 +322,7 @@ void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes, 
             printMessage(messageIfYes);
         }
     }
+    free(cmd);
 }
 
 void printMessage(int num) {
