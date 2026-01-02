@@ -4,6 +4,7 @@
 #define NUM_WORDS 500
 #define NUM_TRAVEL_RULES 200
 #define NUM_RANDOMS 80
+#define NUM_OBJECT_DESC 23
 
 typedef struct _location {
     char *long_description;
@@ -31,6 +32,12 @@ typedef struct _travelRule {
 typedef struct _random {
     char* description;
 } Random;
+
+typedef struct _objectText {
+    int object;
+    int state;
+    char* text;
+} ObjectText;
 
 
 // C ADVENTURES
@@ -61,6 +68,7 @@ Location *locations;
 Word *words;
 TravelRule *travelRules;
 Random *randoms;
+ObjectText *objectDescriptions;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
 int key[300], Default[300], travel[1000], tk[25], ktab[1000], atab[1000];
@@ -77,6 +85,7 @@ void loadLongLocationDescriptions(FILE *fp);
 void loadShortLocationDescriptions(FILE *fp);
 void loadTravelData(FILE *fp);
 void loadWords(FILE *fp);
+void loadObjectDescriptions(FILE *fp);
 void loadSpecials(FILE *fp);
 
 void f1004(FILE *fp);

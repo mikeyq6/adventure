@@ -21,6 +21,11 @@ void init(void) {
     for(int i=0; i<NUM_RANDOMS; i++) {
         randoms[i].description = (char*)malloc(sizeof(char) * 500);
     }
+    objectDescriptions = (ObjectText*)malloc(sizeof(ObjectText*) * NUM_OBJECT_DESC);
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
+        objectDescriptions[i].text = (char*)malloc(sizeof(char) * 100);
+    }
+    
     
     
 // C READ THE PARAMETERS
@@ -103,7 +108,7 @@ void readData(void) {
                 loadWords(fp);
                 break;
             case 5:
-                loadSpecials(fp);
+                loadObjectDescriptions(fp);
                 break;
             case 6:
                 loadSpecials(fp);
@@ -227,6 +232,34 @@ void loadWords(FILE *fp) {
     // for(int i=0; i<NUM_WORDS; i++) {
     //     printf("Word class [%d]: '%s'\n", words[i].class, words[i].text);
     // }
+
+    free(line);
+}
+
+void loadObjectDescriptions(FILE *fp) {
+    char *line = (char*)malloc(sizeof(char) * 100);
+    int i = 0, objectNumber = 0;
+
+    do {
+        fgets(line, 100, fp);
+        objectNumber = trimEntryNumber(line);
+        if(objectNumber == -1) {
+            break;
+        }
+
+        trimLeading(line, 0);
+
+        objectDescriptions[i].object = objectNumber % 100;
+        objectDescriptions[i].state = objectNumber / 100;
+        strcpy(objectDescriptions[i].text, line);
+        i++;
+        
+    } while (objectNumber != -1);
+
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
+        printf("Object [%d], State %d, Desc: '%s'\n", objectDescriptions[i].object,
+                objectDescriptions[i].state, objectDescriptions[i].text);
+    }
 
     free(line);
 }
