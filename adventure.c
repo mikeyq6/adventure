@@ -299,7 +299,7 @@ void run(void) {
     int yeah = 0;
     char *cmd1 = (char*)malloc(sizeof(char) * 100);
     char *cmd2 = (char*)malloc(sizeof(char) * 100);
-    yes(65, 1, 0, &yeah); // Show initial message
+    questionPlayer(65, 1, 0, &yeah); // Show initial message
 
     printMessage(1); // Show intro
 
@@ -413,7 +413,7 @@ void handleSpecial(int code) {
     }
 }
 
-void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) {
+void questionPlayer(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) {
     char *cmd = (char*)malloc(sizeof(char) * 100);
     printMessage(messageToShow);
     readSingleCommand(cmd);

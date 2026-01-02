@@ -116,7 +116,7 @@ void handleCommand(char *cmd1, char* cmd2);
 void handleTravel(Word *word, MoveResult *currentMove);
 void handleSpecial(int code);
 Word *getWord(const char *cmd);
-void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
+void questionPlayer(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
 
 // Cleanup
 void end(void);
