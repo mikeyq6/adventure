@@ -4,6 +4,7 @@
 int main(int argc, char **argv) {
     init();
     run();
+    end();
     return 0;
 }
 
@@ -50,6 +51,28 @@ void init(void) {
     readData();
 }
 
+void end(void) {    
+    for(int i=0; i<NUM_LOCATIONS; i++) {
+        free(locations[i].long_description);
+        free(locations[i].short_description);
+    }
+    free(locations);
+    for(int i=0; i<NUM_WORDS; i++) {
+        free(words[i].text);
+    }
+    free(words);
+    free(travelRules);
+    for(int i=0; i<NUM_RANDOMS; i++) {
+        free(randoms[i].description);
+    }
+    free(randoms);
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
+        free(objectDescriptions[i].text);
+    }
+    free(objectDescriptions);
+    free(currentMove);
+}
+
 void readData(void) {
     int ikind = 0;
     FILE *fp;
@@ -88,10 +111,6 @@ void readData(void) {
         }
         
     }
-
-// C TRAVEL = NEG IF LAST THIS SOURCE + DEST*1024 + KEYWORD
-
-// C COND  = 1 IF LIGHT,  2 IF DON T ASK QUESTION
 }
 
 void loadLongLocationDescriptions(FILE *fp) {
@@ -381,7 +400,6 @@ Word *getWord(const char *cmd) {
 }
 
 // Utils
-
 void printMessage(int num) {
     printf("\n%s\n", randoms[num-1].description);
 }

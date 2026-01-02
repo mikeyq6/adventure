@@ -102,6 +102,9 @@ void handleTravel(Word *word);
 Word *getWord(const char *cmd);
 void yes(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
 
+// Cleanup
+void end(void);
+
 // Utils
 void printMessage(int num);
 void printLocation(int num);
