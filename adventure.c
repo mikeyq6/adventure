@@ -9,6 +9,7 @@ int main(int argc, char **argv) {
 }
 
 void init(void) {
+    srand(time(NULL));
     currentLocation = 1;
     locations = (Location *)malloc(sizeof(Location) * NUM_LOCATIONS);
     for(int i=0; i<NUM_LOCATIONS; i++) {
@@ -387,6 +388,8 @@ void handleTravel(Word *word, MoveResult *currentMove) {
 void handleSpecial(int code) {
     switch(code) {
         case 300:
+            currentLocation = (rand() % 2) == 0 ? 5 : 6;
+            printf("cl: %d\n", currentLocation);
             break;
         case 301:
             break;
