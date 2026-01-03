@@ -25,8 +25,8 @@ void init(void) {
     for(int i=0; i<NUM_RANDOMS; i++) {
         randoms[i].description = (char*)malloc(sizeof(char) * 1500);
     }
-    objects = (Object*)malloc(sizeof(Object*) * NUM_OBJECT_DESC);
-    for(int i=0; i<NUM_OBJECT_DESC; i++) {
+    objects = (Object*)malloc(sizeof(Object*) * NUM_OBJECTS);
+    for(int i=0; i<NUM_OBJECTS; i++) {
         objects[i].text = (char*)malloc(sizeof(char) * 200);
     }
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
@@ -68,7 +68,7 @@ void end(void) {
         free(randoms[i].description);
     }
     free(randoms);
-    for(int i=0; i<NUM_OBJECT_DESC; i++) {
+    for(int i=0; i<NUM_OBJECTS; i++) {
         free(objects[i].text);
     }
     free(objects);
@@ -102,7 +102,7 @@ void readData(void) {
                 loadWords(fp);
                 break;
             case 5:
-                loadObjectDescriptions(fp);
+                loadObjects(fp);
                 break;
             case 6:
                 loadSpecials(fp);
@@ -235,7 +235,7 @@ void loadWords(FILE *fp) {
     free(line);
 }
 
-void loadObjectDescriptions(FILE *fp) {
+void loadObjects(FILE *fp) {
     char *line = (char*)malloc(sizeof(char) * 200);
     int i = 0, objectNumber = 0;
 
@@ -455,5 +455,14 @@ void printLocation(int num) {
     } else {
         locations[num].visited = 1;
         printf("\n%s\n", locations[num].long_description);
+    }
+}
+
+void getObject(int number, Object *target) {
+    for(int i=0; i<NUM_OBJECTS; i++) {
+        if(objects[i].number == number) {
+            target = &objects[i];
+            break;
+        }
     }
 }
