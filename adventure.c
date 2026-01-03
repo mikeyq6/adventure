@@ -25,9 +25,9 @@ void init(void) {
     for(int i=0; i<NUM_RANDOMS; i++) {
         randoms[i].description = (char*)malloc(sizeof(char) * 1500);
     }
-    objectDescriptions = (Object*)malloc(sizeof(Object*) * NUM_OBJECT_DESC);
+    objects = (Object*)malloc(sizeof(Object*) * NUM_OBJECT_DESC);
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
-        objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
+        objects[i].text = (char*)malloc(sizeof(char) * 200);
     }
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
 
@@ -69,9 +69,9 @@ void end(void) {
     }
     free(randoms);
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
-        free(objectDescriptions[i].text);
+        free(objects[i].text);
     }
-    free(objectDescriptions);
+    free(objects);
     free(currentMove);
 }
 
@@ -248,9 +248,9 @@ void loadObjectDescriptions(FILE *fp) {
 
         trimLeading(line, 0);
 
-        objectDescriptions[i].object = objectNumber % 100;
-        objectDescriptions[i].state = objectNumber / 100;
-        strcpy(objectDescriptions[i].text, line);
+        objects[i].number = objectNumber % 100;
+        objects[i].state = objectNumber / 100;
+        strcpy(objects[i].text, line);
         i++;
         
     } while (objectNumber != -1);

@@ -41,7 +41,7 @@ typedef struct _random {
 } Random;
 
 typedef struct _object {
-    int object;
+    int number;
     int state;
     char* text;
 } Object;
@@ -88,7 +88,7 @@ Location *locations;
 Word *words;
 TravelRule *travelRules;
 Random *randoms;
-Object *objectDescriptions;
+Object *objects;
 MoveResult *currentMove;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
