@@ -25,7 +25,7 @@ void init(void) {
     for(int i=0; i<NUM_RANDOMS; i++) {
         randoms[i].description = (char*)malloc(sizeof(char) * 1500);
     }
-    objectDescriptions = (ObjectText*)malloc(sizeof(ObjectText*) * NUM_OBJECT_DESC);
+    objectDescriptions = (Object*)malloc(sizeof(Object*) * NUM_OBJECT_DESC);
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
         objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
     }

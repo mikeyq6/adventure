@@ -40,11 +40,11 @@ typedef struct _random {
     char* description;
 } Random;
 
-typedef struct _objectText {
+typedef struct _object {
     int object;
     int state;
     char* text;
-} ObjectText;
+} Object;
 
 typedef enum {
     TYPE_OK = 0,
@@ -88,7 +88,7 @@ Location *locations;
 Word *words;
 TravelRule *travelRules;
 Random *randoms;
-ObjectText *objectDescriptions;
+Object *objectDescriptions;
 MoveResult *currentMove;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
