@@ -31,25 +31,6 @@ void init(void) {
     }
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
 
-    setup = 1;
-    keys = 1;
-    lamp = 2;
-    grate = 3;
-    rod = 5;
-    bird = 7;
-    nugget = 10;
-    snake = 11;
-    food = 19;
-    water = 20;
-    axe = 21;
-
-    for(int i=0; i<300; i++) {
-        stext[i] = 0;
-        if(i < 200) btext[i] = 0;
-        if(i < 100) rtext[i] = 0;
-        ltext[i] = 0;
-    }
-
     readData();
     setObjectLocations();
 }
