@@ -25,9 +25,9 @@ void init(void) {
     for(int i=0; i<NUM_RANDOMS; i++) {
         randoms[i].description = (char*)malloc(sizeof(char) * 1500);
     }
-    objects = (Object*)malloc(sizeof(Object*) * NUM_OBJECTS);
+    objectDescriptions = (ObjectDescriptions*)malloc(sizeof(ObjectDescriptions*) * NUM_OBJECTS);
     for(int i=0; i<NUM_OBJECTS; i++) {
-        objects[i].text = (char*)malloc(sizeof(char) * 200);
+        objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
     }
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
 
@@ -51,6 +51,7 @@ void init(void) {
     }
 
     readData();
+    setObjectLocations();
 }
 
 void end(void) {    
@@ -69,9 +70,9 @@ void end(void) {
     }
     free(randoms);
     for(int i=0; i<NUM_OBJECTS; i++) {
-        free(objects[i].text);
+        free(objectDescriptions[i].text);
     }
-    free(objects);
+    free(objectDescriptions);
     free(currentMove);
 }
 
@@ -248,9 +249,9 @@ void loadObjects(FILE *fp) {
 
         trimLeading(line, 0);
 
-        objects[i].number = objectNumber % 100;
-        objects[i].state = objectNumber / 100;
-        strcpy(objects[i].text, line);
+        objectDescriptions[i].number = objectNumber % 100;
+        objectDescriptions[i].state = objectNumber / 100;
+        strcpy(objectDescriptions[i].text, line);
         i++;
         
     } while (objectNumber != -1);
@@ -293,6 +294,29 @@ void loadSpecials(FILE *fp) {
     #endif
 
     free(line);
+}
+
+void setObjectLocations(void) {
+    // DATA(IPLT(I),I=1,20)/3,3,8,10,11,14,13,9,15,18,19,17,27,28,29,30,0,0,3,3/
+    placeObject(KEYS, 3);
+    placeObject(LAMP, 3);
+    placeObject(GRATE, 8);
+    placeObject(CAGE, 10);
+    placeObject(ROD, 11);
+    placeObject(STEPS, 14);
+    placeObject(BIRD, 13);
+    placeObject(NUGGET, 9);
+    placeObject(SNAKE, 15);
+    placeObject(FISSURE, 18);
+    placeObject(DIAMOND, 19);
+    placeObject(SILVER, 17);
+    placeObject(JEWEL, 27);
+    placeObject(COINS, 28);
+    placeObject(DWARF, 29);
+    placeObject(ROCK, 30);
+    placeObject(AXE, 3);
+    placeObject(KNIFE, 3);
+
 }
 
 // Gameplay
@@ -436,13 +460,26 @@ void questionPlayer(int messageToShow, int messageIfYes, int messageIfNo, int *h
     free(cmd);
 }
 
-Word *getWord(const char *cmd) {
-    for(int i=0; i<NUM_WORDS; i++) {
-        if(strcmp(cmd, (*(words + i)).text) == 0) {
-            return words + i;
+void placeObject(int object, int location) {
+    Location *loc = &locations[location];
+    for(int i=0; i<loc->numObjectsHere; i++) {
+        if(loc->objects[i] == object) {
+            return; // already here
         }
     }
-    return NULL;
+    loc->objects[loc->numObjectsHere++] = object; 
+}
+void removeObject(int object, int location) {
+    Location *loc = &locations[location];
+    for(int i=0; i<loc->numObjectsHere; i++) {
+        if(loc->objects[i] == object) {
+            for(int j=(i+1); j<loc->numObjectsHere; j++) {
+                loc->objects[j-1] = loc->objects[j];
+            }
+            loc->numObjectsHere--;
+            break;
+        }
+    }
 }
 
 // Utils
@@ -456,12 +493,32 @@ void printLocation(int num) {
         locations[num].visited = 1;
         printf("\n%s\n", locations[num].long_description);
     }
+
+    // Print any objects
+    if(locations[num].numObjectsHere > 0) {
+        for(int i=0; i<locations[num].numObjectsHere; i++) {
+            printObject(locations[num].objects[i]);
+        }
+    }
 }
 
-void getObject(int number, Object *target) {
+void printObject(int num) {
+    printf("\n%s\n", objectDescriptions[num].text);
+}
+
+Word *getWord(const char *cmd) {
+    for(int i=0; i<NUM_WORDS; i++) {
+        if(strcmp(cmd, (*(words + i)).text) == 0) {
+            return words + i;
+        }
+    }
+    return NULL;
+}
+
+void getObject(int number, ObjectDescriptions *target) {
     for(int i=0; i<NUM_OBJECTS; i++) {
-        if(objects[i].number == number) {
-            target = &objects[i];
+        if(objectDescriptions[i].number == number) {
+            target = &objectDescriptions[i];
             break;
         }
     }

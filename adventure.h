@@ -15,6 +15,8 @@ typedef struct _location {
     char *long_description;
     char *short_description;
     int visited;
+    int numObjectsHere;
+    int objects[24];
 } Location;
 
 typedef enum {
@@ -44,7 +46,7 @@ typedef struct _object {
     int number;
     int state;
     char* text;
-} Object;
+} ObjectDescriptions;
 
 typedef enum {
     TYPE_OK = 0,
@@ -59,6 +61,30 @@ typedef struct _moveResult {
     int dest;
     int messageNumber;
 } MoveResult;
+
+enum {
+    KEYS = 1,
+    LAMP = 2,
+    GRATE = 3,
+    CAGE = 4,
+    ROD = 5,
+    STEPS = 6,
+    BIRD = 7,
+    NUGGET = 10,
+    SNAKE = 11,
+    FISSURE = 12,
+    DIAMOND = 13,
+    SILVER = 14,
+    JEWEL = 15,
+    COINS = 16,
+    DWARF = 17,
+    ROCK = 18,
+    FOOD = 19,
+    WATER = 20,
+    AXE = 21,
+    KNIFE = 22,
+    CHEST = 23
+};
 
 // C ADVENTURES
 	// IMPLICIT INTEGER(A-Z)
@@ -88,7 +114,7 @@ Location *locations;
 Word *words;
 TravelRule *travelRules;
 Random *randoms;
-Object *objects;
+ObjectDescriptions *objectDescriptions;
 MoveResult *currentMove;
 int iobj[300], ichain[100], iplace[100], ifixed[100], cond[300];
 int prop[100], abb[300], lline[1000][22], ltext[300], stext[300];
@@ -109,6 +135,7 @@ void loadTravelData(FILE *fp);
 void loadWords(FILE *fp);
 void loadObjects(FILE *fp);
 void loadSpecials(FILE *fp);
+void setObjectLocations(void);
 
 // Gameplay
 void run(void);
@@ -119,6 +146,8 @@ void handleTravel(Word *word, MoveResult *currentMove);
 void handleSpecial(int code);
 Word *getWord(const char *cmd);
 void questionPlayer(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
+void placeObject(int object, int location);
+void removeObject(int object, int location);
 
 // Cleanup
 void end(void);
@@ -126,4 +155,5 @@ void end(void);
 // Utils
 void printMessage(int num);
 void printLocation(int num);
-void getObject(int number, Object *target);
+void printObject(int num);
+void getObject(int number, ObjectDescriptions *target);
