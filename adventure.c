@@ -25,11 +25,14 @@ void init(void) {
     for(int i=0; i<NUM_RANDOMS; i++) {
         randoms[i].description = (char*)malloc(sizeof(char) * 1500);
     }
-    objectDescriptions = (ObjectDescriptions*)malloc(sizeof(ObjectDescriptions*) * NUM_OBJECTS);
-    for(int i=0; i<NUM_OBJECTS; i++) {
+    objectDescriptions = (ObjectDescriptions*)malloc(sizeof(ObjectDescriptions*) * NUM_OBJECT_DESC);
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
         objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
     }
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
+    for(int i=0; i<NUM_OBJECT_DESC; i++) { // Init object state to default values
+        objectState[i] = 0;
+    }
 
     readData();
     setObjectLocations();
@@ -50,7 +53,7 @@ void end(void) {
         free(randoms[i].description);
     }
     free(randoms);
-    for(int i=0; i<NUM_OBJECTS; i++) {
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
         free(objectDescriptions[i].text);
     }
     free(objectDescriptions);
@@ -84,7 +87,7 @@ void readData(void) {
                 loadWords(fp);
                 break;
             case 5:
-                loadObjects(fp);
+                loadObjectDescriptions(fp);
                 break;
             case 6:
                 loadSpecials(fp);
@@ -217,7 +220,7 @@ void loadWords(FILE *fp) {
     free(line);
 }
 
-void loadObjects(FILE *fp) {
+void loadObjectDescriptions(FILE *fp) {
     char *line = (char*)malloc(sizeof(char) * 200);
     int i = 0, objectNumber = 0;
 
@@ -239,7 +242,7 @@ void loadObjects(FILE *fp) {
 
     #ifdef DEBUG_DATA_PARSING
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
-        printf("Object [%d], State %d, Desc: '%s'\n", objectDescriptions[i].object,
+        printf("Object [%d], State %d, Desc: '%s'\n", objectDescriptions[i].number,
                 objectDescriptions[i].state, objectDescriptions[i].text);
     }
     #endif
@@ -482,7 +485,12 @@ void printLocation(int num) {
 }
 
 void printObject(int num) {
-    printf("\n%s\n", objectDescriptions[num].text);
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
+        if(objectDescriptions[i].number == num && objectDescriptions[i].state == objectState[num]) {
+            printf("\n%s\n", objectDescriptions[i].text);
+            break;
+        }
+    }
 }
 
 Word *getWord(const char *cmd) {
@@ -495,7 +503,7 @@ Word *getWord(const char *cmd) {
 }
 
 void getObject(int number, ObjectDescriptions *target) {
-    for(int i=0; i<NUM_OBJECTS; i++) {
+    for(int i=0; i<NUM_OBJECT_DESC; i++) {
         if(objectDescriptions[i].number == number) {
             target = &objectDescriptions[i];
             break;

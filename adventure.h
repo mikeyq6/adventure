@@ -8,7 +8,7 @@
 #define NUM_WORDS 500
 #define NUM_TRAVEL_RULES 200
 #define NUM_RANDOMS 80
-#define NUM_OBJECTS 23
+#define NUM_OBJECT_DESC 23
 
 
 typedef struct _location {
@@ -97,6 +97,7 @@ MoveResult *currentMove;
 int setup;
 int running = 1;
 int currentLocation;
+int objectState[NUM_OBJECT_DESC];
 
 // initialisation
 void init(void);
@@ -105,7 +106,7 @@ void loadLongLocationDescriptions(FILE *fp);
 void loadShortLocationDescriptions(FILE *fp);
 void loadTravelData(FILE *fp);
 void loadWords(FILE *fp);
-void loadObjects(FILE *fp);
+void loadObjectDescriptions(FILE *fp);
 void loadSpecials(FILE *fp);
 void setObjectLocations(void);
 
