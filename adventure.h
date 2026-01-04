@@ -94,7 +94,7 @@ Random *randoms;
 ObjectDescriptions *objectDescriptions;
 MoveResult *currentMove;
 
-int setup, keys, lamp, grate, rod, bird, nugget, snake, food, water, axe;
+int setup;
 int running = 1;
 int currentLocation;
 

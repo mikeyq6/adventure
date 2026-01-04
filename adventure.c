@@ -278,7 +278,6 @@ void loadSpecials(FILE *fp) {
 }
 
 void setObjectLocations(void) {
-    // DATA(IPLT(I),I=1,20)/3,3,8,10,11,14,13,9,15,18,19,17,27,28,29,30,0,0,3,3/
     placeObject(KEYS, 3);
     placeObject(LAMP, 3);
     placeObject(GRATE, 8);
@@ -297,7 +296,6 @@ void setObjectLocations(void) {
     placeObject(ROCK, 30);
     placeObject(AXE, 3);
     placeObject(KNIFE, 3);
-
 }
 
 // Gameplay
