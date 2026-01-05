@@ -86,7 +86,6 @@ enum {
     CHEST = 23
 };
 
-float RAN;
 Location *locations;
 Word *words;
 TravelRule *travelRules;
@@ -98,6 +97,7 @@ int setup;
 int running = 1;
 int currentLocation;
 int objectState[NUM_OBJECT_DESC];
+int objectLocations[NUM_OBJECT_DESC];
 
 // initialisation
 void init(void);
@@ -121,6 +121,7 @@ Word *getWord(const char *cmd);
 void questionPlayer(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes);
 void placeObject(int object, int location);
 void removeObject(int object, int location);
+// int locationOfObject(int object);
 
 // Cleanup
 void end(void);

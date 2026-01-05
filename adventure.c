@@ -32,6 +32,7 @@ void init(void) {
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
     for(int i=0; i<NUM_OBJECT_DESC; i++) { // Init object state to default values
         objectState[i] = 0;
+        objectLocations[i] = 0;
     }
 
     readData();
@@ -398,12 +399,28 @@ void handleSpecial(int code) {
             printf("cl: %d\n", currentLocation);
             break;
         case 301:
+            currentLocation = 23;
+            if(objectState[GRATE] > 0) {
+                currentLocation = 9;
+            } 
             break;
         case 302:
+            currentLocation = 9;
+            if(objectState[GRATE] > 0) {
+                currentLocation = 8;
+            }
             break;
         case 303:
+            currentLocation = 20;
+            if(objectLocations[NUGGET] != -1) {
+                currentLocation = 15;
+            }
             break;
         case 304:
+            currentLocation = 22;
+            if(objectLocations[NUGGET] != -1) {
+                currentLocation = 14;
+            }
             break;
         case 305:
             break;
@@ -450,6 +467,7 @@ void placeObject(int object, int location) {
         }
     }
     loc->objects[loc->numObjectsHere++] = object; 
+    objectLocations[object] = location;
 }
 void removeObject(int object, int location) {
     Location *loc = &locations[location];
@@ -462,6 +480,7 @@ void removeObject(int object, int location) {
             break;
         }
     }
+    objectLocations[object] = 0;
 }
 
 // Utils
