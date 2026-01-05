@@ -9,6 +9,7 @@
 #define NUM_TRAVEL_RULES 200
 #define NUM_RANDOMS 80
 #define NUM_OBJECT_DESC 23
+#define NUM_OBJECTS 23
 
 
 typedef struct _location {
@@ -42,9 +43,8 @@ typedef struct _random {
     char* description;
 } Random;
 
-typedef struct _object {
+typedef struct _objectDescription {
     int number;
-    int state;
     char* text;
 } ObjectDescriptions;
 
@@ -61,6 +61,12 @@ typedef struct _moveResult {
     int dest;
     int messageNumber;
 } MoveResult;
+
+typedef struct _object {
+    int currentState;
+    int currentLocation;
+    int portability;
+} Object;
 
 enum {
     KEYS = 1,
@@ -92,12 +98,14 @@ TravelRule *travelRules;
 Random *randoms;
 ObjectDescriptions *objectDescriptions;
 MoveResult *currentMove;
+Object *objects;
 
 int setup;
 int running = 1;
 int currentLocation;
-int objectState[NUM_OBJECT_DESC];
-int objectLocations[NUM_OBJECT_DESC];
+// int objectState[NUM_OBJECT_DESC];
+// int objectLocations[NUM_OBJECT_DESC];
+// int objectPortability[NUM_OBJECT_DESC] = { 0,0,1,0,0,1,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0 };
 
 // initialisation
 void init(void);
@@ -109,6 +117,7 @@ void loadWords(FILE *fp);
 void loadObjectDescriptions(FILE *fp);
 void loadSpecials(FILE *fp);
 void setObjectLocations(void);
+void setObjectPortability(void);
 
 // Gameplay
 void run(void);

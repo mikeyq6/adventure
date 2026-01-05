@@ -30,13 +30,16 @@ void init(void) {
         objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
     }
     currentMove = (MoveResult*)malloc(sizeof(MoveResult));
+    objects = (Object*)malloc(sizeof(Object) * NUM_OBJECTS);
     for(int i=0; i<NUM_OBJECT_DESC; i++) { // Init object state to default values
-        objectState[i] = 0;
-        objectLocations[i] = 0;
+        objects[i].currentLocation = 0;
+        objects[i].currentState = 0;
+        objects[i].portability = 0;
     }
 
     readData();
     setObjectLocations();
+    setObjectPortability();
 }
 
 void end(void) {    
@@ -59,6 +62,7 @@ void end(void) {
     }
     free(objectDescriptions);
     free(currentMove);
+    free(objects);
 }
 
 void readData(void) {
@@ -234,8 +238,7 @@ void loadObjectDescriptions(FILE *fp) {
 
         trimLeading(line, 0);
 
-        objectDescriptions[i].number = objectNumber % 100;
-        objectDescriptions[i].state = objectNumber / 100;
+        objectDescriptions[i].number = objectNumber;
         strcpy(objectDescriptions[i].text, line);
         i++;
         
@@ -298,8 +301,15 @@ void setObjectLocations(void) {
     placeObject(COINS, 28);
     placeObject(DWARF, 29);
     placeObject(ROCK, 30);
-    placeObject(AXE, 3);
-    placeObject(KNIFE, 3);
+    placeObject(FOOD, 3);
+    placeObject(WATER, 3);
+}
+
+void setObjectPortability(void) {
+    objects[GRATE].portability = 1;
+    objects[STEPS].portability = 1;
+    objects[SNAKE].portability = 1;
+    objects[FISSURE].portability = 1;
 }
 
 // Gameplay
@@ -400,35 +410,51 @@ void handleSpecial(int code) {
             break;
         case 301:
             currentLocation = 23;
-            if(objectState[GRATE] > 0) {
+            if(objects[GRATE].currentState > 0) {
                 currentLocation = 9;
             } 
             break;
         case 302:
             currentLocation = 9;
-            if(objectState[GRATE] > 0) {
+            if(objects[GRATE].currentState > 0) {
                 currentLocation = 8;
             }
             break;
         case 303:
             currentLocation = 20;
-            if(objectLocations[NUGGET] != -1) {
+            if(objects[NUGGET].currentLocation != -1) {
                 currentLocation = 15;
             }
             break;
         case 304:
             currentLocation = 22;
-            if(objectLocations[NUGGET] != -1) {
+            if(objects[NUGGET].currentLocation != -1) {
                 currentLocation = 14;
             }
             break;
         case 305:
+            currentLocation = 27;
+            if(objects[FISSURE].currentState == 0) {
+                currentLocation = 31;
+            }
             break;
         case 306:
+            currentLocation = 28;
+            if(objects[SNAKE].currentState == 0) {
+                currentLocation = 32;
+            }
             break;
         case 307:
+            currentLocation = 29;
+            if(objects[SNAKE].currentState == 0) {
+                currentLocation = 32;
+            }
             break;
         case 308:
+            currentLocation = 30;
+            if(objects[SNAKE].currentState == 0) {
+                currentLocation = 32;
+            }
             break;
         case 309:
             break;
@@ -467,7 +493,7 @@ void placeObject(int object, int location) {
         }
     }
     loc->objects[loc->numObjectsHere++] = object; 
-    objectLocations[object] = location;
+    objects[object].currentLocation = location;
 }
 void removeObject(int object, int location) {
     Location *loc = &locations[location];
@@ -477,10 +503,10 @@ void removeObject(int object, int location) {
                 loc->objects[j-1] = loc->objects[j];
             }
             loc->numObjectsHere--;
+            objects[object].currentLocation = 0;
             break;
         }
     }
-    objectLocations[object] = 0;
 }
 
 // Utils
@@ -504,8 +530,14 @@ void printLocation(int num) {
 }
 
 void printObject(int num) {
+    int target = 0;
+    if(objects[num].portability == 0) {
+        target = objects[num].currentState == 0 ? 200 + num : num;
+    } else {
+        target = objects[num].currentState == 1 ? 100 + num : num;
+    }
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
-        if(objectDescriptions[i].number == num && objectDescriptions[i].state == objectState[num]) {
+        if(objectDescriptions[i].number == target) {
             printf("\n%s\n", objectDescriptions[i].text);
             break;
         }
