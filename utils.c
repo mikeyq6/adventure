@@ -13,6 +13,7 @@ void trimLeading(char *string, int replaceLB) {
             if(replaceLB) {
                 temp[cur++] = ' ';
             }
+            temp[cur++] = '\0';
         } else if((string[i] == ' ' || string[i] == '\t') && firstCharFound == 0) {
             continue;
         } else {
@@ -26,8 +27,8 @@ void trimLeading(char *string, int replaceLB) {
 }
 
 int trimEntryNumber(char *string) {
-    char *temp = (char*)malloc(strlen(string) * sizeof(char));
-    char *strNum = (char*)malloc(5 * sizeof(char));
+    char *temp = (char*)calloc(strlen(string), sizeof(char));
+    char *strNum = (char*)calloc(5, sizeof(char));
     int numEnd = 0;
     int cur = 0;
     int num = 0;

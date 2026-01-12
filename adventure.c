@@ -11,31 +11,32 @@ int main(int argc, char **argv) {
 void init(void) {
     srand(time(NULL));
     currentLocation = 1;
-    locations = (Location *)malloc(sizeof(Location) * NUM_LOCATIONS);
+    locations = calloc(NUM_LOCATIONS, sizeof(Location));
     for(int i=0; i<NUM_LOCATIONS; i++) {
-        locations[i].long_description = (char *)malloc(sizeof(char) * 500);
-        locations[i].short_description = (char *)malloc(sizeof(char) * 100);
+        locations[i].long_description = calloc(500, sizeof(char));
+        locations[i].short_description = calloc(100, sizeof(char));
     }
-    words = (Word *)malloc(sizeof(Word) * NUM_WORDS);
+    words = calloc(NUM_WORDS, sizeof(Word));
     for(int i=0; i<NUM_WORDS; i++) {
-        words[i].text = (char *)malloc(sizeof(char) * 5);
+        words[i].text = calloc(6, sizeof(char));
     }
-    travelRules = (TravelRule *)malloc(sizeof(TravelRule) * NUM_TRAVEL_RULES);
-    randoms = (Random*)malloc(sizeof(Random*) * NUM_RANDOMS);
+    travelRules = calloc(NUM_TRAVEL_RULES, sizeof(TravelRule));
+    randoms = calloc(NUM_RANDOMS, sizeof(Random));
     for(int i=0; i<NUM_RANDOMS; i++) {
-        randoms[i].description = (char*)malloc(sizeof(char) * 1500);
+        randoms[i].description = calloc(1500, sizeof(char));
     }
-    objectDescriptions = (ObjectDescriptions*)malloc(sizeof(ObjectDescriptions*) * NUM_OBJECT_DESC);
+    objectDescriptions = calloc(NUM_OBJECT_DESC, sizeof(ObjectDescriptions));
     for(int i=0; i<NUM_OBJECT_DESC; i++) {
-        objectDescriptions[i].text = (char*)malloc(sizeof(char) * 200);
+        objectDescriptions[i].text = calloc(200, sizeof(char));
     }
-    currentMove = (MoveResult*)malloc(sizeof(MoveResult));
-    objects = (Object*)malloc(sizeof(Object) * NUM_OBJECTS);
-    for(int i=0; i<NUM_OBJECT_DESC; i++) { // Init object state to default values
-        objects[i].currentLocation = 0;
-        objects[i].currentState = 0;
-        objects[i].portability = 0;
-    }
+    currentMove = calloc(1, sizeof(MoveResult));
+    objects = calloc(NUM_OBJECTS, sizeof(Object));
+
+    // TODO: check allocations
+    // if (!locations || !words || !randoms) {
+    //     // handle allocation failure
+    // }
+
 
     readData();
     setObjectLocations();
@@ -69,7 +70,7 @@ void readData(void) {
     int ikind = 0;
     FILE *fp;
     fp = fopen("data.txt", "r");
-    char *sc = (char*)malloc(sizeof(char) * 3);
+    char *sc = calloc(3, sizeof(char));
 
     int section = 0;
     while(section >= 0 && ikind++ < 10) {
@@ -106,7 +107,7 @@ void readData(void) {
 }
 
 void loadLongLocationDescriptions(FILE *fp) {
-    char *line = (char*)malloc(sizeof(char) * 100);
+    char *line = calloc(100, sizeof(char));
     int lineNumber = 0;
 
     do {
@@ -136,7 +137,7 @@ void loadLongLocationDescriptions(FILE *fp) {
 }
 
 void loadShortLocationDescriptions(FILE *fp) {
-    char *line = (char*)malloc(sizeof(char) * 100);
+    char *line = calloc(100, sizeof(char));
     int lineNumber = 0;
 
     do {
@@ -168,7 +169,7 @@ void loadShortLocationDescriptions(FILE *fp) {
 void loadTravelData(FILE *fp) {
     int ruleNumber = 0;
     int temp = 0;
-    char *line = (char*)malloc(sizeof(char) * 50);
+    char *line = calloc(50, sizeof(char));
 
     do {
         fgets(line, 50, fp);
@@ -196,7 +197,7 @@ void loadTravelData(FILE *fp) {
 }
 
 void loadWords(FILE *fp) {
-    char *line = (char*)malloc(sizeof(char) * 100);
+    char *line = calloc(100, sizeof(char));
     int wordNumber = 0;
     int wordCount = 0;
 
@@ -206,7 +207,7 @@ void loadWords(FILE *fp) {
         if(wordNumber == -1) {
             break;
         }
-
+        line[5] = '\0';
         trimLeading(line, 0);
 
         words[wordCount].class = wordNumber / 1000;
@@ -226,7 +227,7 @@ void loadWords(FILE *fp) {
 }
 
 void loadObjectDescriptions(FILE *fp) {
-    char *line = (char*)malloc(sizeof(char) * 200);
+    char *line = calloc(200, sizeof(char));
     int i = 0, objectNumber = 0;
 
     do {
@@ -255,7 +256,7 @@ void loadObjectDescriptions(FILE *fp) {
 }
 
 void loadSpecials(FILE *fp) {
-    char *line = (char*)malloc(sizeof(char) * 100);
+    char *line = calloc(100, sizeof(char));
     int lineNumber = 0;
 
     do {
@@ -315,8 +316,8 @@ void setObjectPortability(void) {
 // Gameplay
 void run(void) {
     int yeah = 0;
-    char *cmd1 = (char*)malloc(sizeof(char) * 100);
-    char *cmd2 = (char*)malloc(sizeof(char) * 100);
+    char *cmd1 = calloc(100, sizeof(char));
+    char *cmd2 = calloc(100, sizeof(char));
     questionPlayer(65, 1, 0, &yeah); // Show initial message
 
     printMessage(1); // Show intro
@@ -342,7 +343,7 @@ void readSingleCommand(char *cmd) {
     toUppercase(cmd);
 }
 void readCommand(char *cmd1, char* cmd2) {
-    char *cmd = (char*)malloc(sizeof(char) * 100);
+    char *cmd = calloc(100, sizeof(char));
     readSingleCommand(cmd);
     // printf("Single: %s\n", cmd);
     if(containsSpace(cmd)) {
@@ -466,7 +467,7 @@ void handleSpecial(int code) {
 }
 
 void questionPlayer(int messageToShow, int messageIfYes, int messageIfNo, int *hasSaidYes) {
-    char *cmd = (char*)malloc(sizeof(char) * 100);
+    char *cmd = calloc(100, sizeof(char));
     printMessage(messageToShow);
     readSingleCommand(cmd);
     // printf("Command: [%s]\n", cmd);
